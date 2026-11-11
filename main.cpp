@@ -2,7 +2,7 @@
 #include <ctime>
 #include <climits>
 #include <cfloat>
-//fieofjowjf
+
 int main() {
 
 	Vec2 gorilla_pos{},
@@ -25,7 +25,7 @@ int main() {
 		Swarm[i].speed.rand_vec(-(dist_max - dist_low), dist_max - dist_low);
 	}
 
-
+//goida
 
 
 }

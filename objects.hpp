@@ -34,7 +34,7 @@ public:
 
 	double static dist(Vec2 v1, Vec2 v2) { return std::sqrt((v2.x-v1.x)*(v2.x - v1.x) + (v2.y - v1.y)*(v2.y - v1.y)); }
 
-	void rand_vec(int low, int up, int* seed = nullptr) { if(seed) std::srand(*seed);x = rand() % (up-low + 1); y = rand() % (up-low + 1); }
+	Vec2 static rand_vec(int low, int up, int* seed = nullptr) { if (seed) std::srand(*seed); double x = rand() % (up - low + 1); if (seed) std::srand(*seed); double y = rand() % (up - low + 1); return Vec2(x, y); }
 };
 
 
