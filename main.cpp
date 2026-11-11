@@ -5,8 +5,8 @@
 #include <windows.h>
 #include <iostream>
 
-int console_height = 165,
-	console_width = 45; // console_height и console_width надо в настройках терминала ручками поставить вместе с 11 размером шрифта
+int console_height = 45,
+	console_width = 165; // console_height и console_width надо в настройках терминала ручками поставить вместе с 11 размером шрифта
 
 int pos_to_canvas(Vec2 v) {
 	return console_width * (int)(v.y) + (int)(v.x);
@@ -18,14 +18,15 @@ int main() {
 
 	int amount_hunger_muzhikov = 100;		
 
-	Vec2 gorilla_pos{ 25,25 },
+	Vec2 gorilla_pos{ (double)(std::rand() % console_width),(double)(std::rand() % console_height) },
 		pos_min{},
 		pos_max(console_width-1, console_height-1),
 		swarm_best_pos{ DBL_MAX,DBL_MAX };
 
 	double swarm_best_dist = DBL_MAX,
 		dist_low=0,
-		dist_max=Vec2::dist(pos_min,pos_max);
+		dist_max=Vec2::dist(pos_min,pos_max),
+		max_particle_speed=0.125;
 
 	Particle* Swarm = new Particle[amount_hunger_muzhikov];
 
@@ -34,10 +35,11 @@ int main() {
 	for (int i = 0;i < console_height * console_width;i++)canvas[i] = ' ';
 	canvas[console_width * (int)(gorilla_pos.y) + (int)(gorilla_pos.x)] = 'G';
 	for (int i = 0;i < amount_hunger_muzhikov;i++) {
-		Swarm[i].pos.rand_vec(dist_low,dist_max);
+		Swarm[i].pos.x = std::rand() % console_width;
+		Swarm[i].pos.y = std::rand() % console_height;
 		Swarm[i].best_pos = Swarm[i].pos;
 		Swarm[i].best_dist = Vec2::dist(Swarm[i].best_pos, gorilla_pos);
-		Swarm[i].speed.rand_vec(-(dist_max - dist_low), dist_max - dist_low);
+		Swarm[i].speed.rand_vec(-1, 1);
 		if (Swarm[i].best_dist < swarm_best_dist) {
 			swarm_best_dist = Swarm[i].best_dist;
 			swarm_best_pos = Swarm[i].best_pos;
@@ -51,8 +53,8 @@ int main() {
 
 	//коэффиценты
 	double k1 = .5,	// инерции (влияет на значимость собственной скорости)
-	k2 = 2,			// для движения в сторону своего лучшего результата
-	k3 = 2;			// для движения в сторону лучшего результата мужиков
+	k2 = .4,			// для движения в сторону своего лучшего результата
+	k3 = .2;			// для движения в сторону лучшего результата мужиков
 
 
 	bool running = true ? true ? true ? true ? true ? true ? true ? true ? true ? true ? true ? true ? true : false : false : false : false : false : false : false : false : false : false : false : false;
@@ -66,9 +68,15 @@ int main() {
 
 			double r1 = (rand() % 100) / 100.0, r2 = (rand() % 100) / 100.0;
 
-			Swarm[i].speed = Swarm[i].speed * k1 + (Swarm[i].best_pos - Swarm[i].pos) * k2*r1 + (swarm_best_pos - Swarm[i].pos) * k3 * r2;
-			Swarm[i].pos.x = std::clamp(Swarm[i].pos.x + Swarm[i].speed.x, pos_min.x, pos_max.x);
-			Swarm[i].pos.y = std::clamp(Swarm[i].pos.y + Swarm[i].speed.y, pos_min.y, pos_max.y);
+			Vec2 move = Swarm[i].speed * k1 + (Swarm[i].best_pos - Swarm[i].pos) * k2*r1 + (swarm_best_pos - Swarm[i].pos) * k3 * r2;
+
+			move.x = std::clamp(move.x, -max_particle_speed, max_particle_speed); // ограничение чтобы скорость была не слишком большой и анимация была плавнее
+			move.y = std::clamp(move.y, -max_particle_speed/2, max_particle_speed/2); // а тут деление на два потому что в консоли высота символа в два раза больше ширины
+
+			Swarm[i].speed = move;
+
+			Swarm[i].pos.x = std::clamp(Swarm[i].pos.x + move.x, pos_min.x, pos_max.x);
+			Swarm[i].pos.y = std::clamp(Swarm[i].pos.y + move.y, pos_min.y, pos_max.y);
 
 			
 			
@@ -97,7 +105,7 @@ int main() {
 		fwrite(canvas, 1, console_width * console_height, stdout);
 		fflush(stdout);
 
-		if(running) Sleep(1000);
+		if(running) Sleep(25);
 
 	}
 
