@@ -14,9 +14,9 @@ int pos_to_canvas(Vec2 v) {
 
 int main() {
 
-	//std::srand(std::time(nullptr));
+	std::srand(std::time(nullptr));
 
-	int amount_hunger_muzhikov = 100;		
+	int amount_hunger_muzhikov = 50;		
 
 	Vec2 gorilla_pos{ (double)(std::rand() % console_width),(double)(std::rand() % console_height) },
 		pos_min{},
@@ -26,7 +26,7 @@ int main() {
 	double swarm_best_dist = DBL_MAX,
 		dist_low=0,
 		dist_max=Vec2::dist(pos_min,pos_max),
-		max_particle_speed=0.125;
+		max_particle_speed=0.2;
 
 	Particle* Swarm = new Particle[amount_hunger_muzhikov];
 
@@ -35,11 +35,17 @@ int main() {
 	for (int i = 0;i < console_height * console_width;i++)canvas[i] = ' ';
 	canvas[console_width * (int)(gorilla_pos.y) + (int)(gorilla_pos.x)] = 'G';
 	for (int i = 0;i < amount_hunger_muzhikov;i++) {
+
 		Swarm[i].pos.x = std::rand() % console_width;
 		Swarm[i].pos.y = std::rand() % console_height;
+
 		Swarm[i].best_pos = Swarm[i].pos;
 		Swarm[i].best_dist = Vec2::dist(Swarm[i].best_pos, gorilla_pos);
-		Swarm[i].speed.rand_vec(-1, 1);
+
+		while(Swarm[i].speed==Vec2(0,0))Swarm[i].speed.rand_vec(-100, 100);
+		Swarm[i].speed.x /= 100;
+		Swarm[i].speed.y /= 100;
+
 		if (Swarm[i].best_dist < swarm_best_dist) {
 			swarm_best_dist = Swarm[i].best_dist;
 			swarm_best_pos = Swarm[i].best_pos;
@@ -52,9 +58,9 @@ int main() {
 
 
 	//коэффиценты
-	double k1 = .5,	// инерции (влияет на значимость собственной скорости)
+	double k1 = .9,	// инерции (влияет на значимость собственной скорости)
 	k2 = .4,			// для движения в сторону своего лучшего результата
-	k3 = .2;			// для движения в сторону лучшего результата мужиков
+	k3 = .4;			// для движения в сторону лучшего результата мужиков
 
 
 	bool running = true ? true ? true ? true ? true ? true ? true ? true ? true ? true ? true ? true ? true : false : false : false : false : false : false : false : false : false : false : false : false;
@@ -93,7 +99,7 @@ int main() {
 				swarm_best_pos = Swarm[i].best_pos;
 			}
 
-			if (canvas[pos_to_canvas(Swarm[i].pos)] == 'G') running = false;
+			if (canvas[pos_to_canvas(Swarm[i].pos)] == 'G') running = false; //мужики выебали горилу
 			canvas[pos_to_canvas(Swarm[i].pos)] = 'o';
 			if (!running)break;
 			
