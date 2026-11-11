@@ -28,6 +28,8 @@ public:
 
 	void operator = (const Vec2& v) { x = v.x;y = v.y; }
 
+	bool operator == (const Vec2& v) const { return (x == v.x && y == v.y); }
+
 	double len() { return std::sqrt(x * x + y * y); }
 
 	double static dot (Vec2 v1, Vec2 v2) {return v1.x * v2.x + v1.y * v2.y;}
@@ -36,23 +38,22 @@ public:
 
 	double static dist(Vec2 v1, Vec2 v2) { return std::sqrt((v2.x-v1.x)*(v2.x - v1.x) + (v2.y - v1.y)*(v2.y - v1.y)); }
 
-	Vec2 static rand_vec(int low, int up) {  
+	void rand_vec(int low, int up) {  
 		up -= low;
-		double x = rand() % (up + 1) + low;
-		double y = rand() % (up + 1) + low;
-		return Vec2(x, y);
+		x = rand() % (up + 1) + low;
+		y = rand() % (up + 1) + low;
 	}
 };
 
 
 class Particle {
 public:
-	Vec2 pos, speed, best;
+	Vec2 pos, speed, best_pos;
+	double best_dist;
 
+	Particle() : pos(Vec2()), speed(Vec2()), best_pos(Vec2()), best_dist(0) {}
 
-	Particle() : pos(Vec2()), speed(Vec2()), best(Vec2()) {}
-
-	Particle(Vec2 pos1, Vec2 speed1, Vec2 best1) : pos(pos1), speed(speed1), best(best1) {}
+	Particle(Vec2 pos1, Vec2 speed1, Vec2 best1,double best2) : pos(pos1), speed(speed1), best_pos(best1), best_dist(best2) {}
 
 	
 
