@@ -1,7 +1,8 @@
 #include "objects.hpp"
 #include <ctime>
 #include <climits>
-
+#include <cfloat>
+//fieofjowjf
 int main() {
 
 	Vec2 gorilla_pos{},
@@ -10,7 +11,7 @@ int main() {
 	
 	int amount_hunger_muzhikov = 100,
 		seed = 0;
-	double swarm_best=DBL_MAX,
+	double swarm_best = DBL_MAX,
 		dist_low=0,
 		dist_max=Vec2::dist(pos_min,pos_max);
 
