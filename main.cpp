@@ -4,8 +4,8 @@
 
 int main() {
 
-	Vec2 gorilla_pos(),
-		pos_min(0,0),
+	Vec2 gorilla_pos{},
+		pos_min{},
 		pos_max(100,100);
 	
 	int amount_hunger_muzhikov = 100,
