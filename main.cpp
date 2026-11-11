@@ -5,13 +5,18 @@
 #include <windows.h>
 #include <iostream>
 
+int console_height = 165,
+	console_width = 45; // console_height и console_width надо в настройках терминала ручками поставить вместе с 11 размером шрифта
+
+int pos_to_canvas(Vec2 v) {
+	return console_width * (int)(v.y) + (int)(v.x);
+};
+
 int main() {
 
+	//std::srand(std::time(nullptr));
 
-	
-	int amount_hunger_muzhikov = 100,
-		console_height=165,
-		console_width=45; // console_height и console_width надо в настройках терминала ручками поставить вместе с 11 размером шрифта
+	int amount_hunger_muzhikov = 100;		
 
 	Vec2 gorilla_pos{ 25,25 },
 		pos_min{},
@@ -38,7 +43,8 @@ int main() {
 			swarm_best_pos = Swarm[i].best_pos;
 		}
 
-		canvas[console_width * (int)(Swarm[i].pos.y) + (int)(Swarm[i].pos.x)] = 'o';
+		if (canvas[pos_to_canvas(Swarm[i].pos)] == 'G') return 0;
+		canvas[pos_to_canvas(Swarm[i].pos)] = 'o';
 
 	}
 
@@ -79,20 +85,19 @@ int main() {
 				swarm_best_pos = Swarm[i].best_pos;
 			}
 
-			if (canvas[console_width * (int)swarm_best_pos.y + (int)swarm_best_pos.x] == 'G')running = false;
-			canvas[console_width * (int)(Swarm[i].pos.y) + (int)(Swarm[i].pos.x)] = 'o';
-			
+			if (canvas[pos_to_canvas(Swarm[i].pos)] == 'G') running = false;
+			canvas[pos_to_canvas(Swarm[i].pos)] = 'o';
+			if (!running)break;
 			
 
 		}
 
-		if(!running)canvas[console_width * (int)swarm_best_pos.y + (int)swarm_best_pos.x] = 'G';
 
 		fwrite("\33[H", 1, 3, stdout);
 		fwrite(canvas, 1, console_width * console_height, stdout);
 		fflush(stdout);
 
-		Sleep(1000);
+		if(running) Sleep(1000);
 
 	}
 
