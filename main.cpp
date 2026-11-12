@@ -16,7 +16,7 @@ int main() {
 
 	std::srand(std::time(nullptr));
 
-	int amount_hunger_muzhikov = 50;		
+	int amount_hunger_muzhikov = 100;		
 
 	Vec2 gorilla_pos{ (double)(std::rand() % console_width),(double)(std::rand() % console_height) },
 		pos_min{},
@@ -33,7 +33,7 @@ int main() {
 	char* canvas = new char[console_height * console_width + 1];
 	canvas[console_height * console_width] = '\0';
 	for (int i = 0;i < console_height * console_width;i++)canvas[i] = ' ';
-	canvas[console_width * (int)(gorilla_pos.y) + (int)(gorilla_pos.x)] = 'G';
+	canvas[pos_to_canvas(gorilla_pos)] = 'G';
 	for (int i = 0;i < amount_hunger_muzhikov;i++) {
 
 		Swarm[i].pos.x = std::rand() % console_width;
@@ -59,12 +59,18 @@ int main() {
 
 	//коэффиценты
 	double k1 = .9,	// инерции (влияет на значимость собственной скорости)
-	k2 = .4,			// для движения в сторону своего лучшего результата
-	k3 = .4;			// для движения в сторону лучшего результата мужиков
+	k2 = .7,			// для движения в сторону своего лучшего результата
+	k3 = .7;			// для движения в сторону лучшего результата мужиков
 
 
 	bool running = true ? true ? true ? true ? true ? true ? true ? true ? true ? true ? true ? true ? true : false : false : false : false : false : false : false : false : false : false : false : false;
 	while (running) {
+
+		if (GetAsyncKeyState('W') & 0x8000) { canvas[pos_to_canvas(gorilla_pos)] = ' '; gorilla_pos.y -= 0.5; canvas[pos_to_canvas(gorilla_pos)] = 'G';}
+		if (GetAsyncKeyState('S') & 0x8000) { canvas[pos_to_canvas(gorilla_pos)] = ' '; gorilla_pos.y += 0.5; canvas[pos_to_canvas(gorilla_pos)] = 'G'; }
+		if (GetAsyncKeyState('A') & 0x8000) { canvas[pos_to_canvas(gorilla_pos)] = ' '; gorilla_pos.x -= 0.5; canvas[pos_to_canvas(gorilla_pos)] = 'G'; }
+		if (GetAsyncKeyState('D') & 0x8000) { canvas[pos_to_canvas(gorilla_pos)] = ' '; gorilla_pos.x += 0.5; canvas[pos_to_canvas(gorilla_pos)] = 'G'; }
+
 
 		for (int i = 0;i < amount_hunger_muzhikov;i++) {
 
